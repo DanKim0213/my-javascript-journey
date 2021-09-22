@@ -1,0 +1,30 @@
+{
+  "name": "my-javascript-journey",
+  "version": "1.0.0",
+  "description": "Problem Solving with JavaScript ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "tsc-watch": "tsc -w",
+    "tsc-clean": "tsc --build --clean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanKim0213/my-javascript-journey.git"
+  },
+  "keywords": [
+    "algorithm",
+    "data-structure",
+    "javascript"
+  ],
+  "author": "dan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DanKim0213/my-javascript-journey/issues"
+  },
+  "homepage": "https://github.com/DanKim0213/my-javascript-journey#readme",
+  "dependencies": {
+    "typescript": "^4.4.3"
+  }
+}
