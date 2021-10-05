@@ -1,3 +1,4 @@
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators
 function* fibonacci() {
   let current = 0;
   let next = 1;
