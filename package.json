@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/DanKim0213/my-javascript-journey#readme",
   "dependencies": {
+    "prettier": "^2.4.1",
     "typescript": "^4.4.3"
   }
 }

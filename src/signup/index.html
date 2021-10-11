@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<!-- 파비콘 에러때문에 적은거에요 -->
+	<link rel="shortcut icon" href="img/header/favicon.ico" />
+	<!-- ========================== -->
+	<meta charset="utf-8" />
+	<meta name="description" content="" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="keywords" content="거래청 뉴 홈페이지" />
+	<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<link rel="shortcut icon" href="img/header/favicon.ico" />
+
+	<!-- Style CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+		integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+	<link rel="stylesheet" href="/css/new_common.css" />
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+		crossorigin="anonymous"></script>
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+	<!-- common.js 테스트 -->
+	<script src="/js/new_common.js" defer></script>
+	<link rel="stylesheet" href="css/signup.css" />
+	<title>뉴 거래청</title>
+</head>
+
+<body>
+	<header class="container topBanner">
+		<a href="/join.php"><i class="fas fa-chevron-left"></i></a>
+		<h1>판매기반 업체</h1>
+	</header>
+	<main class="container signup">
+		<form class="formMain">
+			<div class="formMain__area">
+				<label>아이디</label>
+				<span class="requisite">(필수)</span>
+				<div>
+					<input class="form-control" type="text" name="id" placeholder="아이디" value="" />
+					<button id="isDuplicated" type="button" name="isDuplicated">
+						중복확인
+					</button>
+				</div>
+				<span class="alert d-none">※ 잘못된 형식의 입력 방법입니다.</span>
+			</div>
+			<div class="formMain__area">
+				<label>비밀번호</label>
+				<span class="requisite">(필수)</span>
+				<div>
+					<input id="pwd" class="form-control" type="password" name="pwd" placeholder="비밀번호" autocomplete="on"
+						value="" />
+					<i id="pwd-show" class="far fa-eye-slash"></i>
+				</div>
+				<span class="alert--empty d-none">※ 필수로 입력해야합니다.</span>
+				<span class="alert">※ 8자에서 16자 이내의 영문 숫자 특수문자조합</span>
+			</div>
+			<div class="formMain__area">
+				<label>비밀번호 확인</label>
+				<span class="requisite">(필수)</span>
+				<div>
+					<input id="pwd-confirm" class="form-control" type="password" name="pwd-confirm" placeholder="비밀번호 확인"
+						autocomplete="on" value="" />
+					<i id="pwd-confirm-show" class="far fa-eye-slash"></i>
+				</div>
+				<span class="alert d-none">※ 입력한 비밀번호와 일치하지 않습니다.</span>
+			</div>
+			<div class="formMain__area">
+				<label>이름</label>
+				<span class="requisite">(필수)</span>
+				<input class="form-control" type="text" name="name" placeholder="이름" value="" />
+				<span class="alert--empty d-none">※ 필수로 입력해야합니다.</span>
+			</div>
+			<div class="formMain__area">
+				<label>이메일</label>
+				<span class="requisite">(필수)</span>
+				<input class="form-control" type="email" name="email" placeholder="이메일" value="" />
+				<span class="alert--empty d-none">※ 필수로 입력해야합니다.</span>
+			</div>
+			<div class="formMain__area">
+				<label>휴대폰 번호</label>
+				<span class="requisite">(필수)</span>
+				<input id="method-input" onkeyup="phoneHyphen('#method-input');" class="form-control" type="tel" name="phone"
+					placeholder="휴대폰 번호" value="" maxlength="13" />
+				<span class="alert--empty d-none">※ 필수로 입력해야합니다.</span>
+			</div>
+			<!-- FIXME: 인증번호 매치 수정필요 -->
+			<div class="formMain__area">
+				<label>인증번호 입력</label>
+				<span class="requisite">(필수)</span>
+				<div>
+					<input class="form-control" type="text" name="identifier-num" placeholder="인증번호 입력" value="" />
+					<button id="request-identifier" type="button" name="request-identifier-num">
+						인증요청
+					</button>
+				</div>
+				<span class="info--idnum d-none">입력하신 번호로 인증번호가 발송되었습니다.</span>
+				<span id="interval" style="color: red; float: right"></span>
+			</div>
+			<section class="branch__1"></section>
+			<div class="formMain__area">
+				<label>유선 전화번호</label>
+				<input class="form-control" type="text" name="tel" placeholder="유선 전화번호" value="" />
+				<span class="alert--empty d-none">※ 필수로 입력해야합니다.</span>
+			</div>
+			<section class="branch__2"></section>
+			<div class="formMain__area">
+				<label id="addr">주소</label>
+				<span class="requisite">(필수)</span>
+				<div>
+					<input class="form-control" type="text" name="address" placeholder="주소" readonly value="" />
+					<button type="button" name="lookup-address">주소찾기</button>
+				</div>
+				<input class="form-control" type="text" name="address-detail" placeholder="상세주소" value="" />
+				<span class="alert--empty d-none">※ 필수로 입력해야합니다.</span>
+			</div>
+			<section class="branch__3"></section>
+			<section class="worker"></section>
+			<section class="delivery"></section>
+			<hr />
+			<!-- 약관동의 -->
+			<section class="formMain__agreement">
+				<h2>약관 동의</h2>
+				<div>
+					<input id="agr-contract" type="checkbox" name="agreement-contract" />
+					<label for="agr-contract">이용약관</label>
+					<a href="#termsAndCondition" data-toggle="modal">내용보기</a>
+				</div>
+				<div>
+					<input id="agr-user" type="checkbox" name="agreement-user" value="" />
+					<label for="agr-user">개인정보동의</label>
+					<a href="#termsAndCondition" data-toggle="modal">내용보기</a>
+				</div>
+				<h2>마케팅정보 수신 동의(선택)</h2>
+				<div>
+					<input id="agr-email" type="checkbox" name="agreement-email" value="" />
+					<label for="agr-email">이메일 수신동의</label>
+				</div>
+				<div>
+					<input id="agr-sms" type="checkbox" name="agreement-sms" value="" />
+					<label for="agr-sms">SMS 수신동의</label>
+				</div>
+				<div>
+					<span>*&nbsp;</span>
+					<p>
+						정보수신동의를 하시면, 고객혜택 및 이벤트 등 다양한 정보를 받으실
+						수 있습니다.
+					</p>
+				</div>
+			</section>
+
+			<!-- 전송 -->
+			<button type="submit" name="button">가입하기</button>
+		</form>
+	</main>
+
+	<!-- Modal for 브랜드샵-->
+	<div class="modal fade" id="brandshopModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">브랜드 샵 선택</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<button class="btn" type="button" name="brand" value="현대 디자인">
+							현대 디자인
+						</button>
+						<button class="btn" type="button" name="brand" value="(주)에이원 우드">
+							(주)에이원 우드
+						</button>
+					</div>
+					<div>
+						<button class="btn" type="button" name="brand" value="(주)우마드 코리아">
+							(주)우마드 코리아
+						</button>
+						<button class="btn" type="button" name="brand" value="LG하우시스">
+							LG하우시스
+						</button>
+					</div>
+					<div>
+						<button class="btn" type="button" name="brand" value="홍입점업체">
+							홍입점업체
+						</button>
+						<button class="btn" type="button" name="brand" value="광진조명">
+							광진조명
+						</button>
+					</div>
+				</div>
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="btn w-50" data-dismiss="modal">
+						선택
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal for 지역 (기술자 및 화물차량) -->
+	<div class="modal fade" id="workPlaces" tabindex="-1" aria-labelledby="workPlacesLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="workPlacesLabel">작업가능지역 선택</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<button class="btn" type="button" name="work-place" value="서울-전체">
+							서울 전체
+						</button>
+						<button class="btn" type="button" name="work-place" value="서울-동부">
+							서울 동부
+						</button>
+					</div>
+					<div>
+						<button class="btn" type="button" name="work-place" value="서울-서부">
+							서울 서부
+						</button>
+						<button class="btn" type="button" name="work-place" value="서울-남부">
+							서울 남부
+						</button>
+					</div>
+					<div>
+						<button class="btn" type="button" name="work-place" value="서울-강남">
+							서울 강남
+						</button>
+						<button class="btn" type="button" name="work-place" value="인천-전체">
+							인천 전체
+						</button>
+					</div>
+					<div>
+						<button class="btn" type="button" name="work-place" value="경기 전체">
+							경기 전체
+						</button>
+						<button class="btn" type="button" name="work-place" value="경기-동부">
+							경기 동부
+						</button>
+					</div>
+					<div>
+						<button class="btn" type="button" name="work-place" value="경기-서부">
+							경기 서부
+						</button>
+						<button class="btn" type="button" name="work-place" value="경기-중부">
+							경기 중부
+						</button>
+					</div>
+					<div>
+						<button class="btn" type="button" name="work-place" value="경기-남부">
+							경기 남부
+						</button>
+						<button class="btn" type="button" name="work-place" value="경기-북부">
+							경기 북부
+						</button>
+					</div>
+					<div>
+						<button class="btn" type="button" name="work-place" value="강원-전체">
+							강원 전체
+						</button>
+						<button class="btn" type="button" name="work-place" value="대전-전체">
+							대전 전체
+						</button>
+					</div>
+
+					<!-- <div>
+                        <button class="btn" type="button" name="work-place" value="서울"> 서울특별시</button>
+                        <button class="btn" type="button" name="work-place" value="부산"> 부산광역시</button>
+                    </div>
+                    <div>
+                        <button class="btn" type="button" name="work-place" value="대구"> 대구광역시 </button>
+                        <button class="btn" type="button" name="work-place" value="인천"> 인천광역시 </button>
+                    </div>
+                    <div>
+                        <button class="btn" type="button" name="work-place" value="광주"> 광주광역시 </button>
+                        <button class="btn" type="button" name="work-place" value="대전"> 대전광역시 </button>
+                    </div>
+                    <div>
+                        <button class="btn" type="button" name="work-place" value="울산">울산광역시</button>
+                        <button class="btn" type="button" name="work-place" value="세종">세종특별시</button>
+                    </div>
+                    <div>
+                        <button class="btn" type="button" name="work-place" value="경기"> 경기도</button>
+                        <button class="btn" type="button" name="work-place" value="강원"> 강원도</button>
+                    </div>
+                    <div>
+                        <button class="btn" type="button" name="work-place" value="충북"> 충청북도</button>
+                        <button class="btn" type="button" name="work-place" value="충남"> 충청남도</button>
+                    </div>
+                    <div>
+                        <button class="btn" type="button" name="work-place" value="전북"> 전라북도</button>
+                        <button class="btn" type="button" name="work-place" value="전남"> 전라남도</button>
+                    </div>
+                    <div>
+                        <button class="btn" type="button" name="work-place" value="경북"> 경상북도</button>
+                        <button class="btn" type="button" name="work-place" value="경남"> 경상남도</button>
+                    </div>
+                    <div>
+                        <button class="btn" type="button" name="work-place" value="제주"> 제주도</button>
+                    </div> -->
+				</div>
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="btn w-50" data-dismiss="modal">
+						선택
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- modal for 차량선택 -->
+	<div class="modal fade" id="carModal" tabindex="-1" aria-labelledby="carLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="carLabel">차량 종류</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<!-- body -->
+					<div>
+						<label><input type="radio" name="car-option" value="오토바이" />오토바이</label>
+						<label><input type="radio" name="car-option" value="다마스" />다마스</label>
+					</div>
+					<div>
+						<label><input type="radio" name="car-option" value="라보" />라보</label>
+						<label><input type="radio" name="car-option" value="aa1" />aa1</label>
+					</div>
+					<div>
+						<label><input type="radio" name="car-option" value="bb1" />bb1</label>
+						<label><input type="radio" name="car-option" value="cc" />cc</label>
+					</div>
+				</div>
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="btn w-50" data-dismiss="modal">
+						선택
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal for 업종선택 -->
+	<div class="modal fade" id="jobCategoryModal" tabindex="-1" aria-labelledby="deliveryLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="deliveryLabel">업종선택</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<!-- body -->
+					<div>
+						<select class="form-control" name="large">
+							<option value="">대분류</option>
+							<!-- <option value="화물">화물</option> -->
+						</select>
+						<select class="form-control" name="medium">
+							<option value="">중분류</option>
+							<!-- <option value="화물">화물</option>
+                            <option value="이사">이사</option> -->
+						</select>
+					</div>
+					<div>
+						<select class="form-control" name="small">
+							<option value="">소분류</option>
+							<!-- <option value="사다리차">사다리차</option>
+                            <option value="레미콘">레미콘</option>
+                            <option value="덤프">덤프</option>
+                            <option value="펌프">펌프</option>
+                            <option value="포크레인">포크레인</option>
+                            <option value="지게차">지게차</option>
+                            <option value="사무실이사">사무실이사</option>
+                            <option value="포장이사">포장이사</option>
+                            <option value="일반이사">일반이사</option>
+                            <option value="해외이사">해외이사</option> -->
+						</select>
+					</div>
+					<div>
+						<!-- area for list -->
+					</div>
+				</div>
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="btn w-50 btn-primary" data-dismiss="modal">
+						선택
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- FIXME: modal for '이용약관', '개인정보동의' -->
+	<div class="modal fade" id="termsAndCondition" tabindex="-1" aria-labelledby="termsAndConditionLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="termsAndConditionLabel">약관 동의</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<!-- body -->
+				</div>
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="btn w-50" data-dismiss="modal">
+						닫기
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 타이틀 -->
+	<script type="text/javascript">
+		var gubun = "" || "일반회원";
+		if (gubun === "화물기사") gubun = "화물기사 & 퀵";
+		$("header h1").text(gubun);
+
+		var social = "";
+		var email = "";
+
+		$('input[name="email"]').val(email);
+		// console.log('social and email', social, email);
+		var JOBTYPE = /기술/.test(gubun)
+			? "tech"
+			: /화물/.test(gubun)
+				? "car"
+				: "";
+	</script>
+
+	<script src="user.js"></script>
+	<script src="index.js"></script>
+	
+	<!-- 렌더링 by 직군 -->
+	<!-- <script type="text/javascript" src="js/pages/signup/render-by-type.js" charset="utf-8"></script> -->
+	<!-- 입점업체 또는 지역업체 -->
+	<!-- <script type="text/javascript" src="js/pages/signup/brandshop.js" charset="utf-8"></script> -->
+	<!-- 기술자 -->
+	<!-- <script type="text/javascript" src="js/pages/signup/worker.js" charset="utf-8"></script> -->
+	<!-- 화물차량 -->
+	<!-- TODO: 삭제하기 -->
+	<!-- <script type="text/javascript" src="js/pages/signup/delivery.js" charset="utf-8"></script> -->
+	<!-- 검증 및 전송 -->
+	<!-- <script type="text/javascript" src="js/pages/signup/verify-and-submit.js" charset="utf-8"></script> -->
+	<!-- 주소검색 -->
+	<!-- <script type="text/javascript" src="js/pages/signup/postcode.js" charset="utf-8"></script> -->
+	<!-- 아이디 중복 검사 -->
+	<!-- <script type="text/javascript" src="js/pages/signup/check-id.js" charset="utf-8"></script> -->
+	<!-- 비밀번호 확인 -->
+	<!-- <script type="text/javascript" src="js/pages/signup/check-pwd.js" charset="utf-8"></script> -->
+	<!-- 인증번호 발송 및 확인 -->
+	<!-- <script type="text/javascript" src="js/pages/utils/check-identifier-num.js" charset="utf-8"></script> -->
+
+	<style>
+		body,
+		html {
+			overflow-x: hidden;
+		}
+
+		.m_container {
+			width: 90%;
+			margin: 0 auto;
+		}
+
+		.topbtnbox {
+			height: 70px;
+			text-align: center;
+			line-height: 70px;
+		}
+
+		.topbtnbox span {
+			border: 1px solid black;
+			border-radius: 10px;
+			font-size: 20px;
+			padding: 10px 15px;
+			z-index: 0;
+			cursor: pointer;
+			/* width: 110px; */
+		}
+
+		.middlebox {
+			height: 40px;
+			line-height: 40px;
+			text-align: center;
+		}
+
+		.middlebox span {
+			font-size: 12px;
+		}
+
+		.infobox {
+			margin-top: 30px;
+			font-size: 12px;
+			color: rgba(0, 0, 0, 0.4);
+			word-break: keep-all;
+		}
+
+		.infobox2 {
+			margin-top: 30px;
+			font-size: 12px;
+		}
+
+		.pointer {
+			cursor: pointer;
+		}
+	</style>
+
+	<div id="footer" style="
+        overflow: hidden;
+        border-top: 1px solid;
+        margin-top: 100px;
+        padding-bottom: 5rem;
+      ">
+		<!-- <div class="row topbtnbox">
+            <div class="col ">
+                <span>로그인</span>
+            </div>
+            <div class="col ">
+                <span>APP설치</span>
+            </div>
+        </div> -->
+		<div class="row middlebox">
+			<div class="col-4 text-right">
+				<span onclick="useModal();" class="pointer">이용약관</span>
+			</div>
+			<div class="col-4">
+				<span onclick="infoModal();" class="pointer">사업자정보확인</span>
+			</div>
+			<div class="col-4 text-left">
+				<span onclick="priceModal();" class="pointer">단가표</span>
+			</div>
+		</div>
+		<div class="m_container infobox">
+			<p>
+				회사명 : 거래청 (대표이사 : LODONGMEI) <br />
+				사업자등록번호 740-40-00540 ㅣ 통신판매업신고 : 제 2020 서울 송파
+				3204호 ㅣ <br />
+				개인정보보호책임자 : LODONGMEI <br />
+				Fax : 02-527-0344 ㅣE-mail : lgkan@naver.com <br />
+				서울특별시 송파구 법원로 128 문정SKV1메트로시티 C동 1103-9호 ㅣ <br />
+				고객센터 : 070-7581-1011
+			</p>
+		</div>
+		<div class="m_container infobox2">
+			<p>
+				거래청은 통신판매중개자로서 거래당사자가 아니며 입점 판매 자가 등록한
+				상품정보 및 입점 판매자가 제공하는 서비스에 대한 이행, 계약사항 등과
+				관련한 의무와 책임 은 거래당사장에게 있습니다.
+			</p>
+		</div>
+		<div class="m_container infobox2">
+			<p>Copyright (c) 2020 georaechung. All Rights Reserved.</p>
+		</div>
+	</div>
+
+	<!-- Footer Area -->
+	<div class="modal fade use_modal" id="exampleModalCenter" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title use_modal_title" id="">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body use_modal_body">...</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var type = "";
+		function useModal() {
+			type = "service";
+			location.href = "/useboard.php?type=" + type + "";
+		}
+		function infoModal() {
+			type = "info";
+			location.href = "/useboard.php?type=" + type + "";
+		}
+		function priceModal() {
+			type = "price";
+			location.href = "/useboard.php?type=" + type + "";
+		}
+	</script>
+</body>
+
+</html>
